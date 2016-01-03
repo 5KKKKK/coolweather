@@ -17,12 +17,19 @@ public class CoolWeatherDB {
     public static final String DB_NAME="cool_weather";
 
     public static final int VERSION=1;
-    private static CoolWeatherDB CoolWeatherDB;
+    private static CoolWeatherDB coolWeatherDB;
     private SQLiteDatabase db;
 
     private CoolWeatherDB(Context context){
         CoolWeatherOpenHelper dbHelper=new CoolWeatherOpenHelper(context,DB_NAME,null,VERSION);
         db=dbHelper.getWritableDatabase();
+    }
+
+    public synchronized static CoolWeatherDB getInstance(Context context){
+        if (coolWeatherDB==null){
+            coolWeatherDB=new CoolWeatherDB(context);
+        }
+        return coolWeatherDB;
     }
 
     //将province实例存储到数据库
@@ -66,7 +73,7 @@ public class CoolWeatherDB {
 
     public List<City>loadCities(int provinceId){
         List<City>list=new ArrayList<City>();
-        Cursor cursor=db.query("City",null,"province_id=?",new String[]{String.valueOf(provinceId)},null,null,null);
+        Cursor cursor=db.query("City",null,"province_id=?",new String[]{String.valueOf(provinceId)},null,null,null);//valueOf方法将int值转化为字符串
         if (cursor!=null){
             do {
                 City city=new City();
