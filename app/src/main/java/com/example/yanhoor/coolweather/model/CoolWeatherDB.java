@@ -44,7 +44,7 @@ public class CoolWeatherDB {
 
     //从数据库读取所有省份
     public List<Province>loadProvinces(){
-        List<Province>list=new ArrayList<Province>();
+        List<Province>list=new ArrayList<>();
         Cursor cursor=db.query("Province",null,null,null,null,null,null);
         if (cursor.moveToFirst()){
             do {
@@ -72,7 +72,7 @@ public class CoolWeatherDB {
     }
 
     public List<City>loadCities(int provinceId){
-        List<City>list=new ArrayList<City>();
+        List<City>list=new ArrayList<>();
         Cursor cursor=db.query("City",null,"province_id=?",new String[]{String.valueOf(provinceId)},null,null,null);//valueOf方法将int值转化为字符串
         if (cursor!=null){
             do {
@@ -101,7 +101,7 @@ public class CoolWeatherDB {
     }
 
     public List<County>loadCounties(int cityId){
-        List<County>list=new ArrayList<County>();
+        List<County>list=new ArrayList<>();
         Cursor cursor=db.query("County",null,"city_id=?",new String[]{String.valueOf(cityId)},null,null,null);
         if (cursor!=null){
             do {
