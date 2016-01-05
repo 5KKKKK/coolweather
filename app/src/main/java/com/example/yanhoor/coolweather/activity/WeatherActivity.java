@@ -13,10 +13,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.yanhoor.coolweather.R;
-import com.example.yanhoor.coolweather.service.AutoUpdateService;
 import com.example.yanhoor.coolweather.util.HttpCallbackListener;
 import com.example.yanhoor.coolweather.util.HttpUtil;
 import com.example.yanhoor.coolweather.util.Utility;
@@ -146,14 +144,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         currentDateText.setText(prefs.getString("current_date",""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
-        //启动自动更新天气服务
-        Intent intent=new Intent(this, AutoUpdateService.class);
-        if (SettingsActivity.isAutoUpdate){
-            startActivity(intent);
-        }else{
-            stopService(intent);
-            Toast.makeText(this,"停止自动更新",Toast.LENGTH_SHORT).show();
-        }
     }
 
     /*添加菜单设置*/

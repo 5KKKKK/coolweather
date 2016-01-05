@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.example.yanhoor.coolweather.receiver.AutoUpdateReceiver;
 import com.example.yanhoor.coolweather.util.HttpCallbackListener;
@@ -26,6 +27,7 @@ public class AutoUpdateService  extends Service {
     //每次服务启动时调用，立即执行内部动作
     @Override
     public int onStartCommand(Intent intent,int flags,int startId){
+        Log.d("AutoUpdateService","Service excuted");
         //开启线程处理耗时逻辑
         new Thread(new Runnable() {
             @Override
