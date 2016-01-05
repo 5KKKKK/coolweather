@@ -19,6 +19,9 @@ import com.example.yanhoor.coolweather.util.Utility;
  * Created by yanhoor on 2016/1/4.
  */
 public class AutoUpdateService  extends Service {
+
+    public static int updateTime=8;//天气自动更新频率
+
     @Override
     public IBinder onBind(Intent intent){
         return null;
@@ -37,7 +40,8 @@ public class AutoUpdateService  extends Service {
         }).start();
 
         AlarmManager manager=(AlarmManager)getSystemService(ALARM_SERVICE);
-        int anHour=8*60*60*1000;//8小时
+        int anHour=updateTime*60*60*1000;
+        Log.d("AutoUpdateService","更新频率改变");
         long triggerAtTime= SystemClock.elapsedRealtime()+anHour;
         Intent i=new Intent(this,AutoUpdateReceiver.class);
         PendingIntent pi=PendingIntent.getBroadcast(this,0,i,0);

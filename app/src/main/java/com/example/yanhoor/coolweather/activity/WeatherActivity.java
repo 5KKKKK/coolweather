@@ -159,7 +159,6 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
             case R.id.settings:
                 Intent intent=new Intent(WeatherActivity.this,SettingsActivity.class);
                 startActivity(intent);
-                finish();
                 break;
             default:
         }
