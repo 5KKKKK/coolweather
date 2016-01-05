@@ -74,7 +74,7 @@ public class CoolWeatherDB {
     public List<City>loadCities(int provinceId){
         List<City>list=new ArrayList<>();
         Cursor cursor=db.query("City",null,"province_id=?",new String[]{String.valueOf(provinceId)},null,null,null);//valueOf方法将int值转化为字符串
-        if (cursor!=null){
+        if (cursor.moveToFirst()){
             do {
                 City city=new City();
                 city.setId(cursor.getInt(cursor.getColumnIndex("id")));
@@ -96,14 +96,14 @@ public class CoolWeatherDB {
             values.put("county_name",county.getCountyName());
             values.put("county_code",county.getCountyCode());
             values.put("city_id",county.getCityId());
-            db.insert("City",null,values);
+            db.insert("County",null,values);
         }
     }
 
     public List<County>loadCounties(int cityId){
         List<County>list=new ArrayList<>();
         Cursor cursor=db.query("County",null,"city_id=?",new String[]{String.valueOf(cityId)},null,null,null);
-        if (cursor!=null){
+        if (cursor.moveToFirst()){
             do {
                 County county=new County();
                 county.setId(cursor.getInt(cursor.getColumnIndex("id")));

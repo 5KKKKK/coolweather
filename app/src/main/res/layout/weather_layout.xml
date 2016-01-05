@@ -13,7 +13,7 @@
             android:id="@+id/switch_city"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_centerVertical="false"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:background="@mipmap/ic_launcher"/>
 
