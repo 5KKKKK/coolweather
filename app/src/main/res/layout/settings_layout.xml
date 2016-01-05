@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <CheckBox
+        android:id="@+id/auto_update_check"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="允许自动更新"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/update_frequence"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="设置更新频率"
+        android:gravity="left"
+        android:textSize="20sp"/>
+
+</LinearLayout>

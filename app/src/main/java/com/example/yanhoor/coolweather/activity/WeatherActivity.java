@@ -6,11 +6,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.yanhoor.coolweather.R;
 import com.example.yanhoor.coolweather.service.AutoUpdateService;
@@ -145,7 +148,32 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         cityNameText.setVisibility(View.VISIBLE);
         //启动自动更新天气服务
         Intent intent=new Intent(this, AutoUpdateService.class);
-        startActivity(intent);
+        if (SettingsActivity.isAutoUpdate){
+            startActivity(intent);
+        }else{
+            stopService(intent);
+            Toast.makeText(this,"停止自动更新",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /*添加菜单设置*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.main,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.settings:
+                Intent intent=new Intent(WeatherActivity.this,SettingsActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+        }
+        return true;
     }
 
 }
