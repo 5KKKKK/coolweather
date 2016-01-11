@@ -1,80 +1,98 @@
 package com.example.yanhoor.coolweather.activity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
-import android.view.Window;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import com.example.yanhoor.coolweather.R;
 import com.example.yanhoor.coolweather.service.AutoUpdateService;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 /**
- * Created by yanhoor on 2016/1/5.
+ * Created by yanhoor on 2016/1/8.
  */
-public class SettingsActivity extends Activity {
-    private CheckBox autoUpdateCheck;
-    private TextView updateClickable;
-    private TextView updateFrequence;
-
+public class SettingsActivity extends PreferenceActivity {
+    public static boolean isUpdateEnable;
+    public static int updateTime=0;
+    /*
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(final Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.settings_layout);
-        autoUpdateCheck=(CheckBox)findViewById(R.id.auto_update_check);
-        updateClickable=(TextView)findViewById(R.id.update_clickable);
-        updateFrequence=(TextView) findViewById(R.id.update_frequence);
-        autoUpdateCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //启动自动更新天气服务
-                Intent intent=new Intent(SettingsActivity.this, AutoUpdateService.class);
-                if (isChecked){
-                    Log.d("SettingsActivity","开启自动更新");
-                    startService(intent);
-                }else{
-                    Log.d("SettingsActivity","关闭自动更新");
-                    stopService(intent);
+        Log.d("settingsActivity","onCreate");
+        //将资源设置默认值，false表示系统只会在之前没有调用过该方法时才设置默认值，不会覆盖之前的设置
+        PreferenceManager.setDefaultValues(this, R.xml.settings, false);
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
+    }
+*/
+
+    public static class MyPreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+        CheckBoxPreference updateCheckBoxPreference;
+        ListPreference frequencyListPreference;
+
+        @Override
+        public void onCreate(final Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.settings);
+            //将资源设置默认值，false表示系统只会在之前没有调用过该方法时才设置默认值，不会覆盖之前的设置
+            PreferenceManager.setDefaultValues(getActivity(), R.xml.settings, false);
+            updateCheckBoxPreference = (CheckBoxPreference) findPreference("update_enable_boolean_key");
+            frequencyListPreference = (ListPreference) findPreference("update_frequency_key");
+            frequencyListPreference.setSummary(frequencyListPreference.getValue()+"小时");
+            updateCheckBoxPreference.setOnPreferenceChangeListener(this);
+            frequencyListPreference.setOnPreferenceChangeListener(this);
+        }
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (preference.getKey().equals("update_enable_boolean_key")) {
+                SettingsActivity.isUpdateEnable=Boolean.parseBoolean(newValue.toString());
+            } else if (preference.getKey().equals("update_frequency_key")) {
+                String textValue = newValue.toString();//textValue 是选中的选项对应的value
+                AutoUpdateService.updateTime = Integer.parseInt(textValue);//设置更新时间
+                SettingsActivity.updateTime= Integer.parseInt(textValue);
+                ListPreference listPreference = (ListPreference) preference;
+                int index = listPreference.findIndexOfValue(textValue);//index contains the index of the clicked item
+                CharSequence[] entries = listPreference.getEntries();//entries[index] 是选中的选项
+                if (index >= 0) {
+                    frequencyListPreference.setSummary(entries[index]);//更新summary
                 }
             }
-        });
-        updateClickable.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AlertDialog.Builder(SettingsActivity.this)
-                        .setTitle("选择时间")
-                        .setIcon(android.R.drawable.ic_dialog_info)
-                        .setItems(R.array.update_time, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+            return true;
+        }
+    }
 
-                                //利用正则表达式提取字符串中的数字
-                                String[] items = getResources().getStringArray(R.array.update_time);
-                                updateFrequence.setText(items[which]);
-                                String regEx="[^0-9]";
-                                Pattern p = Pattern.compile(regEx);
-                                Matcher m = p.matcher(items[which]);
-                                String numString=m.replaceAll("").trim();
-                                AutoUpdateService.updateTime=Integer.parseInt(numString);
-                                Intent intent=new Intent(SettingsActivity.this, AutoUpdateService.class);
-                                startService(intent);
+    //显示preferenceHeader资源文件
+    @Override
+    public void onBuildHeaders(List<Header> target){
+        loadHeadersFromResource(R.xml.preference_headers,target);
+    }
 
-                            }
-                        })
-                        .setNegativeButton("取消",null)
-                        .show();
+    @Override
+    public boolean isValidFragment(String s){
+        return true;
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        Intent i=new Intent(this,AutoUpdateService.class);
+        if (isUpdateEnable){
+            startService(i);
+            if (updateTime!=0){
+                startService(i);
+            }else{
+                stopService(i);
             }
-        });
+        }
+
+        Log.d("SettingsActivity","onDestroy");
     }
 
 }

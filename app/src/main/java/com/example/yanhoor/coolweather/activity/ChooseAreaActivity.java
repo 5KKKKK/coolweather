@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -56,6 +57,9 @@ public class ChooseAreaActivity extends Activity {
         super.onCreate(savedIInstanceState);
         isFromWeatherActivity=getIntent().getBooleanExtra("from_weather_activity",false);
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("city_selected",false)){
+            Log.d("ChooseAreaActivity","citySelected");
+        }
 
         //已经选择城市且不是从WeatherActivity跳转过来，才会直接转到WeatherActivity;
         if (prefs.getBoolean("city_selected",false)&& !isFromWeatherActivity){

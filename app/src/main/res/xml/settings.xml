@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:title="设置">
+
+            <PreferenceCategory android:title="更新设置">
+
+                <CheckBoxPreference
+                    android:key="update_enable_boolean_key"
+                    android:title="更新设置"
+                    android:summaryOn="自动更新：开"
+                    android:summaryOff="自动更新：关"
+                    android:defaultValue="true"
+                    />
+
+                <ListPreference
+                    android:key="update_frequency_key"
+                    android:title="设置更新频率"
+                    android:dialogTitle="设置更新频率"
+                    android:entries="@array/update_frequency_name"
+                    android:entryValues="@array/update_frequency_values"
+                    android:negativeButtonText="取消"
+                    android:summary="设置更新周期"
+                    android:defaultValue="8小时"
+                    />
+
+            </PreferenceCategory>
+
+    <PreferenceScreen android:title="测试子页"
+                      android:summary="点击进入">
+
+        <Preference android:title="Preference是什么鬼"
+                    android:summary="test"/>
+
+    </PreferenceScreen>
+
+</PreferenceScreen>

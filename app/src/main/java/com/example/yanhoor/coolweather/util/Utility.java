@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.yanhoor.coolweather.model.City;
 import com.example.yanhoor.coolweather.model.CoolWeatherDB;
@@ -21,6 +22,7 @@ import java.util.Locale;
  * Created by yanhoor on 2016/1/3.
  */
 public class Utility {
+
     /*解析和处理服务器返回的省级数据*/
     public synchronized static boolean handleProvincesResponse(CoolWeatherDB coolWeatherDB,String response){
         if (!TextUtils.isEmpty(response)){
@@ -87,6 +89,7 @@ public class Utility {
             String weatherDesp=weatherInfo.getString("weather");
             String publishTime=weatherInfo.getString("ptime");
             saveWeatherInfo(context,cityName,weatherCode,temp1,temp2,weatherDesp,publishTime);
+            Log.d("Utility","handleWeatherResponse");
         }catch (JSONException e){
             e.printStackTrace();
         }
@@ -95,17 +98,19 @@ public class Utility {
     /*将服务器返回的所有天气信息存储到sharedpreferences文件中*/
     public static void saveWeatherInfo(Context context,String cityName,String weatherCode,String temp1,
                                        String temp2,String weatherDesp,String publishTime){
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy年m月d日", Locale.CHINA);
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy年MM月dd日", Locale.CHINA);
         SharedPreferences.Editor editor= PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putBoolean("city_selected",true);
         editor.putString("city_name",cityName);
-        editor.putString("weathera_code",weatherCode);
+        editor.putString("weather_code",weatherCode);
         editor.putString("temp1",temp1);
         editor.putString("temp2",temp2);
         editor.putString("weather_desp",weatherDesp);
         editor.putString("publish_time",publishTime);
         editor.putString("current_date",sdf.format(new Date()));
         editor.commit();
+        Log.d("Utility","saveWeatherInfo");
+        Log.d("Utility","saveWeatherInfo current date "+sdf.format(new Date()));
 
     }
 

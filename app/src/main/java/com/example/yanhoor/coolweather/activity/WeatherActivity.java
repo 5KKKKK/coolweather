@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        Log.d("WeatherActivity","onCreate");
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
@@ -48,7 +50,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         String countyCode=getIntent().getStringExtra("county_code");
         if (!TextUtils.isEmpty(countyCode)){
             publishText.setText("同步中...");
-            weatherInfoLayout.setVisibility(View.INVISIBLE);;
+            weatherInfoLayout.setVisibility(View.INVISIBLE);
             cityNameText.setVisibility(View.INVISIBLE);
             queryWeatherCoed(countyCode);
         }else{
@@ -73,6 +75,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                 publishText.setText("同步中...");
                 SharedPreferences prefs=PreferenceManager.getDefaultSharedPreferences(this);
                 String weatherCode=prefs.getString("weather_code","");
+                Log.d("WeatherActivity","refreshing weather"+weatherCode);
                 if (!TextUtils.isEmpty(weatherCode)){
                     queryWeatherInfo(weatherCode);
                 }
@@ -91,7 +94,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
     /*查询天气代号对应的天气*/
     private void queryWeatherInfo(String weatherCode){
         String address="http://www.weather.com.cn/data/cityinfo/"+weatherCode+".html";
-        queryFromServer(address,"weatheryCode");
+        queryFromServer(address,"weatherCode");
     }
 
     /*根据传入的地址和类型从服务器查询天气代号或天气信息*/
@@ -105,10 +108,12 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
                         String[] array=response.split("\\|");
                         if (array!=null&&array.length==2){
                             String weatherCode=array[1];
+                            Log.d("WeatherActivity","Checkout weatherCode from server");
                             queryWeatherInfo(weatherCode);
                         }
                     }
                 }else if ("weatherCode".equals(type)){
+                    Log.d("WeatherActivity","Checkout weatherInfo from server");
                     //处理服务器返回的天气信息
                     Utility.handleWeatherResponse(WeatherActivity.this,response);
                     runOnUiThread(new Runnable() {
